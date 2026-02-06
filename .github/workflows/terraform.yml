@@ -1,0 +1,82 @@
+name: Terraform - API Gateway
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_ACCOUNT_ID: "043391333434"
+  TF_ACTION: "apply" # apply or destroy
+  AWS_REGION: "us-east-1"
+  GITHUB_ROLE_NAME: "Github-Actions-Terraform-Role"
+
+jobs:
+  terraform:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{env.AWS_ACCOUNT_ID}}:role/${{env.GITHUB_ROLE_NAME}}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+        # import Api Gateway in state
+      - name: Terraform Import API Gateway
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          terraform state list | grep aws_apigatewayv2_api.api_gateway_api \
+          || terraform import aws_apigatewayv2_api.api_gateway_api 5l7h8g
+
+        # validates the import to see if the api gateway is in state
+      - name: Validate API Gateway in Terraform state
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if terraform state list | grep -q aws_apigatewayv2_api.api_gateway_api; then
+            echo "✅ API Gateway está presente no state do Terraform"
+          else
+            echo "❌ API Gateway NÃO está no state do Terraform"
+            exit 1
+          fi
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform ${{env.TF_ACTION}} -auto-approve
+
+        # validates the destroy by checking if the API Gateway still exists in AWS
+      - name: Validate API Gateway is destroyed in AWS
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if aws apigatewayv2 get-api \
+            --api-id 5l7h8g \
+            --region $AWS_REGION > /dev/null 2>&1; then
+            echo "❌ API Gateway ainda EXISTE na AWS após o destroy"
+            exit 1
+          else
+            echo "✅ API Gateway NÃO existe mais na AWS (destroy confirmado)"
+          fi
