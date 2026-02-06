@@ -53,7 +53,7 @@ jobs:
         if: env.TF_ACTION == 'destroy'
         working-directory: terraform
         run: |
-          if terraform state list | grep -q aws_apigatewayv2_api.api_gateway_api; then
+          if terraform state list | grep -q aws_apigatewayv2_api.http_api; then
             echo "✅ API Gateway está presente no state do Terraform"
           else
             echo "❌ API Gateway NÃO está no state do Terraform"
