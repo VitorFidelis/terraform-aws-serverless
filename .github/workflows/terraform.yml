@@ -45,8 +45,8 @@ jobs:
         if: env.TF_ACTION == 'destroy'
         working-directory: terraform
         run: |
-          terraform state list | grep aws_apigatewayv2_api.api_gateway_api \
-          || terraform import aws_apigatewayv2_api.api_gateway_api 5l7h8g
+          terraform state list | grep aws_apigatewayv2_api.http_api \
+          || terraform import aws_apigatewayv2_api.http_api 5l7h8g
 
         # validates the import to see if the api gateway is in state
       - name: Validate API Gateway in Terraform state
