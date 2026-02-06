@@ -19,7 +19,7 @@ variable "aws_apigatewayv2_api_name" {
 variable "aws_apigatewayv2_stage_api_id" {
   description = "ID da API Gateway HTTP"
   type        = string
-  default    = "aws_apigatewayv2_api.http_api.id"
+  default    = aws_apigatewayv2_api.http_api.id
 }
 
 variable "aws_apigatewayv2_stage_name" {
