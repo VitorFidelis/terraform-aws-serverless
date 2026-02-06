@@ -7,7 +7,7 @@ resource "aws_apigatewayv2_api" "http_api" {
 
 # Criando o estágio "dev" para a API Gateway HTTP
 resource "aws_apigatewayv2_stage" "dev" {
-  api_id      = var.aws_apigatewayv2_stage_api_id
+  api_id      = aws_apigatewayv2_api.http_api.id
   name        = var.aws_apigatewayv2_stage_name
   auto_deploy = true
 }

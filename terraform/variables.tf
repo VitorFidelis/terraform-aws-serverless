@@ -15,13 +15,6 @@ variable "aws_apigatewayv2_api_name" {
   default     = "example-http-api"
 }
 
-# Variáveis para configuração do estágio da API Gateway HTTP
-variable "aws_apigatewayv2_stage_api_id" {
-  description = "ID da API Gateway HTTP"
-  type        = string
-  default    = aws_apigatewayv2_api.http_api.id
-}
-
 variable "aws_apigatewayv2_stage_name" {
   description = "Nome do estágio da API Gateway HTTP"
   type        = string
