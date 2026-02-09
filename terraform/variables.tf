@@ -43,5 +43,5 @@ variable "aws_lambda_function_handler" {
 variable "aws_lambda_function_filename" {
   description = "Caminho do pacote da função Lambda"
   type        = string
-  default     = "lambda/target/hello-lambda-1.0.0.jar"
+  default     = "../lambda/target/hello-lambda-1.0.0.jar"
 }
