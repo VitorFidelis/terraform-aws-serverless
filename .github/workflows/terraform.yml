@@ -40,6 +40,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+        # Check if API Gateway exists and set API_ID env variable
       - name: Get API Gateway ID by name
         if: env.TF_ACTION == 'destroy'
         run: |
