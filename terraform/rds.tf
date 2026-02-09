@@ -4,7 +4,7 @@ resource "aws_db_instance" "postgres" {
 
   engine            = "postgres"
   engine_version    = "15.4"
-  instance_class    = var.db_instance_class
+  instance_class    = var.aws_db_instance_db_instance_class
 
   allocated_storage = 20
   storage_type      = "gp2"
