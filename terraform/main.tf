@@ -1,4 +1,5 @@
 # Configura o provedor AWS
 provider "aws" {
-  region = var.aws_region
+    description = "Configuração do provedor AWS"
+    region = var.aws_region
 }

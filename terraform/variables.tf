@@ -20,3 +20,28 @@ variable "aws_apigatewayv2_stage_name" {
   type        = string
   default     = "dev"
 }
+
+# Variáveis para configuração da função Lambda
+variable "aws_lambda_function_name" {
+  description = "Nome da função Lambda"
+  type        = string
+  default     = "hello-world"
+}
+
+variable "aws_lambda_function_runtime" {
+  description = "Runtime da função Lambda"
+  type        = string
+  default     = "java17"
+}
+
+variable "aws_lambda_function_handler" {
+  description = "Handler da função Lambda"
+  type        = string
+  default     = "example.HelloLambda::RequestHandler"
+}
+
+variable "aws_lambda_function_filename" {
+  description = "Caminho do pacote da função Lambda"
+  type        = string
+  default     = "lambda/target/hello-lambda-1.0.0.jar"
+}
