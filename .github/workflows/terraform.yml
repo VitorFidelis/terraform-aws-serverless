@@ -88,11 +88,11 @@ jobs:
         working-directory: terraform
         run: |
           if aws lambda get-function \
-            --function-name example-lambda-function \
+            --function-name hello-world \
             --region $AWS_REGION > /dev/null 2>&1; then
           
             terraform state list | grep -q aws_lambda_function.helloworld \
-            || terraform import aws_lambda_function.helloworld example-lambda-function
+            || terraform import aws_lambda_function.helloworld hello-world
           
             echo "✅ Lambda importada com sucesso no state"
           else
