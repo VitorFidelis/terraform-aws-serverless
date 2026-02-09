@@ -11,7 +11,7 @@ permissions:
 
 env:
   AWS_ACCOUNT_ID: "043391333434"
-  TF_ACTION: "destroy" # apply or destroy
+  TF_ACTION: "apply" # apply or destroy
   AWS_REGION: "us-east-1"
   GITHUB_ROLE_NAME: "Github-Actions-Terraform-Role"
 
@@ -111,6 +111,69 @@ jobs:
             exit 1
           fi
 
+        # Import RDS in state
+      - name: Terraform Import RDS Instance
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if aws rds describe-db-instances \
+            --db-instance-identifier example-postgres-db \
+            --region $AWS_REGION > /dev/null 2>&1; then
+            
+            terraform state list | grep -q aws_db_instance.postgres \
+            || terraform import aws_db_instance.postgres example-postgres-db
+            
+            echo "✅ RDS Instance importada com sucesso no state"
+          else
+            echo "⚠️ RDS Instance não existe na AWS, nada para importar"
+          fi
+
+        # validates the import to see if the RDS instance is in state
+      - name: Validate RDS Instance in Terraform state
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if terraform state list | grep -q aws_db_instance.postgres; then
+            echo "✅ RDS Instance está presente no state do Terraform"
+          else
+            echo "❌ RDS Instance NÃO está no state do Terraform"
+            exit 1
+          fi
+
+      # Import RDS Security Group
+      - name: Terraform Import RDS Security Group
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          SG_ID=$(aws ec2 describe-security-groups \
+            --filters \
+              Name=group-name,Values=rds-postgres-sg \
+              Name=vpc-id,Values=$VPC_ID \
+            --query "SecurityGroups[0].GroupId" \
+            --output text \
+            --region $AWS_REGION)
+          
+          if [ "$SG_ID" != "None" ] && [ -n "$SG_ID" ]; then
+            terraform state list | grep -qx aws_security_group.rds_sg \
+            || terraform import aws_security_group.rds_sg $SG_ID
+          
+            echo "✅ Security Group importado no state"
+          else
+            echo "⚠️ Security Group não encontrado, nada para importar"
+          fi
+
+        # validates the import to see if the RDS security group is in state
+      - name: Validate RDS Security Group in Terraform state
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if terraform state list | grep -qx aws_security_group.rds_sg; then
+            echo "✅ RDS Security Group está presente no state do Terraform"
+          else
+            echo "❌ RDS Security Group NÃO está no state do Terraform"
+            exit 1
+          fi
+
       - name: Terraform Plan
         run: terraform plan
 
@@ -130,4 +193,88 @@ jobs:
             exit 1
           else
             echo "✅ API Gateway NÃO existe mais na AWS (destroy confirmado)"
+          fi
+
+        # validates the destroy by checking if the Lambda Function still exists in AWS
+      - name: Validate Lambda Function is destroyed in AWS
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if aws lambda get-function \
+            --function-name hello-world \
+            --region $AWS_REGION > /dev/null 2>&1; then
+            echo "❌ Lambda Function ainda EXISTE na AWS após o destroy"
+            exit 1
+          else
+            echo "✅ Lambda Function NÃO existe mais na AWS (destroy confirmado)"
+          fi
+
+        # validates the destroy by checking if the RDS instance still exists in AWS
+      - name: Validate RDS Instance is destroyed in AWS
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          STATUS=$(aws rds describe-db-instances \
+          --db-instance-identifier example-postgres-db \
+          --region $AWS_REGION \
+          --query "DBInstances[0].DBInstanceStatus" \
+          --output text 2>/dev/null || echo "NOT_FOUND")
+          
+          if [ "$STATUS" = "NOT_FOUND" ]; then
+            echo "✅ RDS Instance NÃO existe mais na AWS (destroy confirmado)"
+          elif [ "$STATUS" = "deleting" ]; then
+            echo "⏳ RDS Instance ainda em processo de deleção (deleting)"
+          else
+            echo "❌ RDS Instance ainda EXISTE na AWS (status: $STATUS)"
+          exit 1
+          fi
+
+        # RDS pode levar um tempo para ser totalmente removido, então vamos esperar e verificar novamente
+      - name: Wait for RDS to be fully destroyed
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          MAX_RETRIES=20
+          SLEEP_TIME=30
+      
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "🔎 Tentativa $i/$MAX_RETRIES: verificando RDS..."
+      
+            STATUS=$(aws rds describe-db-instances \
+              --db-instance-identifier example-postgres-db \
+              --region $AWS_REGION \
+              --query "DBInstances[0].DBInstanceStatus" \
+              --output text 2>/dev/null || echo "NOT_FOUND")
+      
+            if [ "$STATUS" = "NOT_FOUND" ]; then
+              echo "✅ RDS foi totalmente removido da AWS"
+              exit 0
+            fi
+      
+            echo "⏳ RDS ainda existe (status: $STATUS). Aguardando ${SLEEP_TIME}s..."
+            sleep $SLEEP_TIME
+          done
+          
+          echo "❌ Timeout: RDS não foi removido após $((MAX_RETRIES * SLEEP_TIME)) segundos"
+          exit 1
+    
+
+        # validates the destroy by checking if the RDS security group still exists in AWS
+      - name: Validate RDS Security Group is destroyed in AWS
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          SG_ID=$(aws ec2 describe-security-groups \
+            --filters \
+              Name=group-name,Values=rds-postgres-sg \
+              Name=vpc-id,Values=$VPC_ID \
+            --query "SecurityGroups[0].GroupId" \
+            --output text \
+            --region $AWS_REGION)
+
+          if [ "$SG_ID" = "None" ] || [ -z "$SG_ID" ]; then
+            echo "✅ RDS Security Group NÃO existe mais na AWS (destroy confirmado)"
+          else
+            echo "⏳ RDS Security Group ainda existe (provavelmente aguardando RDS liberar)"
+            echo "   SG_ID: $SG_ID"
           fi
