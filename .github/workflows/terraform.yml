@@ -11,7 +11,7 @@ permissions:
 
 env:
   AWS_ACCOUNT_ID: "043391333434"
-  TF_ACTION: "destroy" # apply or destroy
+  TF_ACTION: "apply" # apply or destroy
   AWS_REGION: "us-east-1"
   GITHUB_ROLE_NAME: "Github-Actions-Terraform-Role"
   TF_VAR_aws_db_instance_db_password: ${{secrets.RDS_DB_PASSWORD}} # Passa a senha do RDS como variável de ambiente para o Terraform
