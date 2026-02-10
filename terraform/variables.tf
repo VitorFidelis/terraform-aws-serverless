@@ -66,7 +66,7 @@ variable "aws_db_instance_db_name" {
 variable "aws_db_instance_db_username" {
   description = "Nome de usuário do banco de dados RDS PostgreSQL"
   type        = string
-  default     = "admin"
+  default     = "app_user"
 }
 
 variable "aws_db_instance_db_password" {
