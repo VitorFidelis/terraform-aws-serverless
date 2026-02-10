@@ -141,40 +141,6 @@ jobs:
             exit 1
           fi
 
-      # Import RDS Security Group
-      - name: Terraform Import RDS Security Group
-        if: env.TF_ACTION == 'destroy'
-        working-directory: terraform
-        run: |
-          SG_ID=$(aws ec2 describe-security-groups \
-            --filters \
-              Name=group-name,Values=rds-postgres-sg \
-              Name=vpc-id,Values=$VPC_ID \
-            --query "SecurityGroups[0].GroupId" \
-            --output text \
-            --region $AWS_REGION)
-          
-          if [ "$SG_ID" != "None" ] && [ -n "$SG_ID" ]; then
-            terraform state list | grep -qx aws_security_group.rds_sg \
-            || terraform import aws_security_group.rds_sg $SG_ID
-          
-            echo "✅ Security Group importado no state"
-          else
-            echo "⚠️ Security Group não encontrado, nada para importar"
-          fi
-
-        # validates the import to see if the RDS security group is in state
-      - name: Validate RDS Security Group in Terraform state
-        if: env.TF_ACTION == 'destroy'
-        working-directory: terraform
-        run: |
-          if terraform state list | grep -qx aws_security_group.rds_sg; then
-            echo "✅ RDS Security Group está presente no state do Terraform"
-          else
-            echo "❌ RDS Security Group NÃO está no state do Terraform"
-            exit 1
-          fi
-
       - name: Terraform Plan
         run: terraform plan
 
@@ -258,24 +224,3 @@ jobs:
           
           echo "❌ Timeout: RDS não foi removido após $((MAX_RETRIES * SLEEP_TIME)) segundos"
           exit 1
-    
-
-        # validates the destroy by checking if the RDS security group still exists in AWS
-      - name: Validate RDS Security Group is destroyed in AWS
-        if: env.TF_ACTION == 'destroy'
-        working-directory: terraform
-        run: |
-          SG_ID=$(aws ec2 describe-security-groups \
-            --filters \
-              Name=group-name,Values=rds-postgres-sg \
-              Name=vpc-id,Values=$VPC_ID \
-            --query "SecurityGroups[0].GroupId" \
-            --output text \
-            --region $AWS_REGION)
-
-          if [ "$SG_ID" = "None" ] || [ -z "$SG_ID" ]; then
-            echo "✅ RDS Security Group NÃO existe mais na AWS (destroy confirmado)"
-          else
-            echo "⏳ RDS Security Group ainda existe (provavelmente aguardando RDS liberar)"
-            echo "   SG_ID: $SG_ID"
-          fi
