@@ -73,3 +73,23 @@ variable "aws_db_instance_db_password" {
   description = "Senha do banco de dados RDS PostgreSQL"
   sensitive = true
 }
+
+# Variáveis para configuração do bucket S3 para o jar da Lambda
+
+variable "lambda_jar_file" {
+  description = "Caminho local do jar da Lambda"
+  type        = string
+  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar"
+}
+
+variable "lambda_s3_bucket" {
+  description = "Nome do bucket S3 para o jar da Lambda"
+  type        = string
+  default     = "lambda-ms-medicamentos-bucket"
+}
+
+variable "lambda_s3_key" {
+  description = "Nome do arquivo no S3"
+  type        = string
+  default     = "ms-medicamentos-0.0.1-SNAPSHOT.jar"
+}

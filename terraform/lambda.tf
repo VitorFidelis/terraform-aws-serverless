@@ -4,6 +4,9 @@ resource "aws_lambda_function" "ms_medicamentos" {
     function_name = var.aws_lambda_function_name
     role          = data.aws_iam_role.lambda_role.arn
 
+    s3_bucket = aws_s3_bucket.lambda_bucket.id
+    s3_key    = aws_s3_object.lambda_jar.key
+
     runtime = var.aws_lambda_function_runtime
     handler = var.aws_lambda_function_handler
 

@@ -141,6 +141,34 @@ jobs:
             exit 1
           fi
 
+        # Import S3 bucket no Terraform state
+      - name: Terraform Import S3 Bucket
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if aws s3api head-bucket --bucket example-terraform-state-bucket --region $AWS_REGION > /dev/null 2>&1; then
+            if ! terraform state list | grep -q aws_s3_bucket.terraform_state_bucket; then
+              terraform import aws_s3_bucket.terraform_state_bucket example-terraform-state-bucket
+              echo "✅ S3 Bucket importado com sucesso no state"
+            else
+              echo "✅ S3 Bucket já estava presente no state"
+            fi
+          else
+            echo "⚠️ S3 Bucket não existe na AWS, nada para importar"
+          fi
+
+        # Validar se o S3 bucket está presente no state
+      - name: Validate S3 Bucket in Terraform state
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if terraform state list | grep -q aws_s3_bucket.terraform_state_bucket; then
+            echo "✅ S3 Bucket está presente no state do Terraform"
+          else
+            echo "❌ S3 Bucket NÃO está no state do Terraform"
+            exit 1
+          fi
+
       - name: Terraform Plan
         run: terraform plan
 
@@ -224,3 +252,15 @@ jobs:
           
           echo "❌ Timeout: RDS não foi removido após $((MAX_RETRIES * SLEEP_TIME)) segundos"
           exit 1
+
+        # validates the destroy by checking if the S3 bucket still exists in AWS
+      - name: Validate S3 Bucket is destroyed in AWS
+        if: env.TF_ACTION == 'destroy'
+        working-directory: terraform
+        run: |
+          if aws s3api head-bucket --bucket example-terraform-state-bucket --region $AWS_REGION > /dev/null 2>&1; then
+            echo "❌ S3 Bucket ainda EXISTE na AWS após o destroy"
+            exit 1
+          else
+            echo "✅ S3 Bucket NÃO existe mais na AWS (destroy confirmado)"
+          fi
