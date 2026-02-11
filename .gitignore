@@ -1,0 +1,4 @@
+# Ignorar builds
+lambda/target/
+*.zip
+*.jar
