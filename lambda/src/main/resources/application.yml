@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/medicamentosdb
+    url: jdbc:postgresql://example-postgres-db.cklekc2ucy81.us-east-1.rds.amazonaws.com:5432/medicamentosdb
     username: app_user
     password: Rds#2026Prod
 
