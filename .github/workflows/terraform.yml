@@ -14,7 +14,7 @@ env:
   TF_ACTION: "apply" # apply or destroy
   AWS_REGION: "us-east-1"
   GITHUB_ROLE_NAME: "Github-Actions-Terraform-Role"
-  TF_VAR_aws_db_instance_db_password: ${{secrets.RDS_DB_PASSWORD}}
+  TF_VAR_aws_db_instance_db_password: ${{secrets.RDS_DB_PASSWORD}} # variável de ambiente para a senha do RDS, que será usada no Terraform
 
 jobs:
   terraform:
