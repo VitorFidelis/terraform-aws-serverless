@@ -10,6 +10,8 @@ resource "aws_lambda_function" "ms_medicamentos" {
     runtime = var.aws_lambda_function_runtime
     handler = var.aws_lambda_function_handler
 
+    source_hash = filebase64sha256("../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar")
+
     vpc_config {
       subnet_ids = data.aws_subnets.default.ids
 
