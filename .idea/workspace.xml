@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f270aeaf-3f5c-4cad-84ac-61fe7206c79c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/terraform/data.tf" beforeDir="false" afterPath="$PROJECT_DIR$/terraform/data.tf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/terraform/lambda.tf" beforeDir="false" afterPath="$PROJECT_DIR$/terraform/lambda.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,6 +93,7 @@
       <workItem from="1770764631783" duration="3005000" />
       <workItem from="1770767891030" duration="7913000" />
       <workItem from="1770809719543" duration="4284000" />
+      <workItem from="1770827889653" duration="332000" />
     </task>
     <servers />
   </component>
