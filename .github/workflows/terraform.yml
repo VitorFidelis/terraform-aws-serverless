@@ -52,22 +52,19 @@ jobs:
         run: terraform init
 
         # Check if API Gateway exists and set API_ID env variable
-      - name: Get API Gateway ID by name
+      - name: Terraform Import API Gateway
         if: env.TF_ACTION == 'destroy'
         run: |
-          API_ID=$(aws apigatewayv2 get-apis \
-            --region $AWS_REGION \
-            --query "Items[?Name=='example-http-api'].ApiId" \
-            --output text)
-          
-          if [ -z "$API_ID" ]; then
-            echo "✅ API Gateway não existe na AWS"
-            exit 0
+          if terraform state list > /dev/null 2>&1; then
+            if ! terraform state list | grep -q aws_apigatewayv2_api.http_api; then
+              terraform import aws_apigatewayv2_api.http_api $API_ID
+              echo "✅ API Gateway importado"
+            else
+              echo "✅ API Gateway já está no state"
+            fi
+          else
+            echo "⚠️ Nenhum state encontrado ainda"
           fi
-          
-          echo "⚠️ API Gateway encontrado: $API_ID"
-          echo "API_ID=$API_ID" >> $GITHUB_ENV
-
 
         # import Api Gateway in state
       - name: Terraform Import API Gateway
