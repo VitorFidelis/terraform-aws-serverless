@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f270aeaf-3f5c-4cad-84ac-61fe7206c79c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/terraform.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/terraform.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/terraform/s3.tf" beforeDir="false" afterPath="$PROJECT_DIR$/terraform/s3.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/terraform/variables.tf" beforeDir="false" afterPath="$PROJECT_DIR$/terraform/variables.tf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

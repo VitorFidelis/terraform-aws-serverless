@@ -1,15 +1,18 @@
 resource "aws_s3_bucket" "lambda_bucket" {
   bucket = var.lambda_s3_bucket
 
-  versioning {
-    enabled = true
-  }
-
   tags = {
     Name = "Lambda Bucket"
-    Environment = "dev"
   }
 }
+
+resource "aws_s3_bucket_versioning" "lambda_bucket_versioning" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 
 # Permissão pública desabilitada (segura)
 resource "aws_s3_bucket_public_access_block" "block_public" {

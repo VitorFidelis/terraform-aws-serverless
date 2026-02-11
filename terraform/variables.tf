@@ -79,7 +79,7 @@ variable "aws_db_instance_db_password" {
 variable "lambda_jar_file" {
   description = "Caminho local do jar da Lambda"
   type        = string
-  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.zip"
+  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar"
 }
 
 variable "lambda_s3_bucket" {
@@ -91,5 +91,5 @@ variable "lambda_s3_bucket" {
 variable "lambda_s3_key" {
   description = "Nome do arquivo no S3"
   type        = string
-  default     = "ms-medicamentos-0.0.1-SNAPSHOT.zip"
+  default     = "ms-medicamentos-0.0.1-SNAPSHOT.jar"
 }
