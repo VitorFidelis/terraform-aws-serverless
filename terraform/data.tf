@@ -11,3 +11,11 @@ data "aws_security_group" "rds_existing" {
   vpc_id = data.aws_vpc.default.id
 }
 
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+
