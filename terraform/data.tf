@@ -18,6 +18,10 @@ data "aws_subnets" "default" {
   }
 }
 
+data "aws_s3_bucket" "lambda_bucket" {
+  bucket = "lambda-ms-medicamentos-bucket"
+}
+
 data "aws_security_group" "lambda_sg" {
   name   = "lambda-sg"
   vpc_id = data.aws_vpc.default.id

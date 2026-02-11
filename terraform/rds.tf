@@ -1,6 +1,6 @@
 # This Terraform configuration defines an AWS RDS PostgreSQL instance with specific settings, including security group associations and backup configurations.
 resource "aws_db_instance" "postgres" {
-  identifier = "example-postgres-db"
+  identifier = "ms-medicamentos-db"
 
   engine            = "postgres"
   instance_class    = var.aws_db_instance_db_instance_class
