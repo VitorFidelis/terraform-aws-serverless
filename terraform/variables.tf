@@ -46,7 +46,7 @@ variable "aws_lambda_function_handler" {
 variable "aws_lambda_function_filename" {
   description = "Caminho do pacote da função Lambda"
   type        = string
-  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar"
+  default     = "../lambda/target/lambda.zip"
 }
 
 # Variáveis para configuração do RDS PostgreSQL
