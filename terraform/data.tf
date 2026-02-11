@@ -18,4 +18,10 @@ data "aws_subnets" "default" {
   }
 }
 
+data "aws_security_group" "lambda_sg" {
+  name   = "lambda-sg"
+  vpc_id = data.aws_vpc.default.id
+}
+
+
 
