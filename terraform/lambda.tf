@@ -10,8 +10,14 @@ resource "aws_lambda_function" "ms_medicamentos" {
     runtime = var.aws_lambda_function_runtime
     handler = var.aws_lambda_function_handler
 
-    /* filename = var.aws_lambda_function_filename
-    source_code_hash = filebase64sha256(var.aws_lambda_function_filename) */
+    vpc_config {
+      subnet_ids = data.aws_subnets.default.ids
+
+      security_group_ids = [
+        aws_security_group.lambda_sg.id
+      ]
+    }
+
 
     timeout     = 30
     memory_size = 1024

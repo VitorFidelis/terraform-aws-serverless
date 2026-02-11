@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://postgres-db:5432/medicamentosdb
+    username: app_user
+    password: Rds#2026Prod
 
   flyway:
     enabled: true

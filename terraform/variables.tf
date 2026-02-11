@@ -60,7 +60,7 @@ variable "aws_db_instance_db_instance_class" {
 variable "aws_db_instance_db_name" {
   description = "Nome do banco de dados RDS PostgreSQL"
   type        = string
-  default     = "exampledb"
+  default     = "medicamentosdb"
 }
 
 variable "aws_db_instance_db_username" {
