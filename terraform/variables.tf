@@ -43,11 +43,11 @@ variable "aws_lambda_function_handler" {
   default     = "br.org.sus.ms_medicamentos.MsMedicamentosLambdaHandler::handleRequest"
 }
 
-variable "aws_lambda_function_filename" {
+/* variable "aws_lambda_function_filename" {
   description = "Caminho do pacote da função Lambda"
   type        = string
-  default     = "../lambda/target/lambda.zip"
-}
+  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.zip"
+} */
 
 # Variáveis para configuração do RDS PostgreSQL
 
@@ -79,7 +79,7 @@ variable "aws_db_instance_db_password" {
 variable "lambda_jar_file" {
   description = "Caminho local do jar da Lambda"
   type        = string
-  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar"
+  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.zip"
 }
 
 variable "lambda_s3_bucket" {
@@ -91,5 +91,5 @@ variable "lambda_s3_bucket" {
 variable "lambda_s3_key" {
   description = "Nome do arquivo no S3"
   type        = string
-  default     = "ms-medicamentos-0.0.1-SNAPSHOT.jar"
+  default     = "ms-medicamentos-0.0.1-SNAPSHOT.zip"
 }

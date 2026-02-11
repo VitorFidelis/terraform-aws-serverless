@@ -98,6 +98,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludeDevtools>true</excludeDevtools>
+                    <layout>ZIP</layout>
                 </configuration>
             </plugin>
             <plugin>
