@@ -14,7 +14,7 @@ variable "aws_region" {
 variable "aws_apigatewayv2_api_name" {
   description = "Nome da API Gateway HTTP"
   type        = string
-  default     = "example-http-api"
+  default     = "ms-medicamentos-http-api"
 }
 
 variable "aws_apigatewayv2_stage_name" {
@@ -28,7 +28,7 @@ variable "aws_apigatewayv2_stage_name" {
 variable "aws_lambda_function_name" {
   description = "Nome da função Lambda"
   type        = string
-  default     = "hello-world"
+  default     = "ms_medicamentos"
 }
 
 variable "aws_lambda_function_runtime" {
@@ -40,13 +40,13 @@ variable "aws_lambda_function_runtime" {
 variable "aws_lambda_function_handler" {
   description = "Handler da função Lambda"
   type        = string
-  default     = "example.HelloLambda::RequestHandler"
+  default     = "br.org.sus.ms_medicamentos.MsMedicamentosLambdaHandler::handleRequest"
 }
 
 variable "aws_lambda_function_filename" {
   description = "Caminho do pacote da função Lambda"
   type        = string
-  default     = "../lambda/target/hello-lambda-1.0.0.jar"
+  default     = "../lambda/target/ms-medicamentos-0.0.1-SNAPSHOT.jar"
 }
 
 # Variáveis para configuração do RDS PostgreSQL
