@@ -13,7 +13,7 @@ resource "aws_db_instance" "postgres" {
   password = var.aws_db_instance_db_password
 
   vpc_security_group_ids = [
-    data.aws_security_group.rds_existing.id
+    aws_security_group.rds_sg.id
   ]
 
   publicly_accessible = true

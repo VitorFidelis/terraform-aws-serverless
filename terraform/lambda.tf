@@ -14,7 +14,7 @@ resource "aws_lambda_function" "ms_medicamentos" {
       subnet_ids = data.aws_subnets.default.ids
 
       security_group_ids = [
-        data.aws_security_group.lambda_sg.id
+        aws_security_group.rds_sg.id
       ]
     }
 
